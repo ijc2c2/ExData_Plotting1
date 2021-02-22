@@ -1,0 +1,18 @@
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip",temp)
+huge_data <- read.csv(unz(temp,"household_power_consumption.txt"), sep =";", na.strings = "?")
+two_days <- subset(huge_data, Date =="1/2/2007" | Date == "2/2/2007")
+two_days$Global_active_power<- as.numeric(two_days$Global_active_power)
+date_and_time = strptime(paste(two_days$Date, two_days$Time, sep=" "), "%d/%m/%Y %H:%M:%S")
+
+png("plot4.png", width = 480, height = 480)
+par(mfrow = c(2,2))
+plot(date_and_time, two_days$Global_active_power,xlab = "", ylab = "Global Active Power", type = "l")
+plot(date_and_time, two_days$Voltage, xlab = "datetime", ylab = "Voltage", type = "l")
+plot(date_and_time,two_days$Sub_metering_1,type = "l",xlab = "", ylab = "Energy sub metering")
+lines(date_and_time,two_days$Sub_metering_2, col = "red")
+lines(date_and_time,two_days$Sub_metering_3, col = "blue")
+legend("topright", legend = c("Sub_metering_1", "Sub_metering_2","Sub_metering_3"),col = c("black", "red", "blue"),lty = 1)
+plot(date_and_time,two_days$Global_reactive_power, xlab = "datetime", ylab = "Global_reactive_power", type = 'l')
+dev.off()
+
